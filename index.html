@@ -39,7 +39,17 @@ for(let i=0;i<5;i++){const x=((i*239+camera*.09)%(W+20))-10,y=((i*127+camera*.31
 function randConst(seed,a,b){const n=Math.sin(seed*127.1+311.7)*43758.5453;return a+(n-Math.floor(n))*(b-a)}
 function roundRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
 function drawStar(x,y,r,color){ctx.save();ctx.translate(x,y);ctx.rotate(performance.now()/900);ctx.fillStyle=color;ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=1.5;ctx.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.46:r;ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
-function drawPlayer(x,y,face){ctx.save();ctx.translate(x,y);ctx.scale(face,1);ctx.fillStyle='rgba(50,101,133,.13)';ctx.beginPath();ctx.ellipse(0,17,17,5,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ff927e';ctx.beginPath();ctx.ellipse(0,3,14,15,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffd2aa';ctx.beginPath();ctx.arc(0,-8,12,0,Math.PI*2);ctx.fill();ctx.fillStyle='#375a73';ctx.beginPath();ctx.arc(4,-9,1.5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(-3,-9,1.5,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#c9705e';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(.5,-5,3,.2,Math.PI-.2);ctx.stroke();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(-9,2,4,0,Math.PI*2);ctx.fill();ctx.restore()}
+function drawPlayer(x,y,face){ctx.save();ctx.translate(x,y);ctx.scale(face,1);ctx.fillStyle='rgba(50,101,133,.13)';ctx.beginPath();ctx.ellipse(0,17,17,5,0,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#2e3f5d';ctx.beginPath();ctx.ellipse(0,0,17,18,0,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#f7f8fa';ctx.beginPath();ctx.ellipse(0,-4,11,12,0,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#1f2d42';ctx.beginPath();ctx.ellipse(-6,-1,3.8,5,0,0,Math.PI*2);ctx.ellipse(6,-1,3.8,5,0,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#f5d9a1';ctx.beginPath();ctx.moveTo(0,1);ctx.lineTo(8,3);ctx.lineTo(0,8);ctx.closePath();ctx.fill();
+ctx.fillStyle='#ffb451';ctx.beginPath();ctx.arc(0,4,2.8,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(-4,-7,2.2,0,Math.PI*2);ctx.arc(4,-7,2.2,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#1f2d42';ctx.beginPath();ctx.arc(-4,-7,1.1,0,Math.PI*2);ctx.arc(4,-7,1.1,0,Math.PI*2);ctx.fill();
+ctx.strokeStyle='#f0a86d';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,-2,5.3,0.8,Math.PI-0.8);ctx.stroke();
+ctx.fillStyle='#f7f8fa';ctx.beginPath();ctx.moveTo(-7,10);ctx.quadraticCurveTo(0,14,7,10);ctx.quadraticCurveTo(0,18,-7,10);ctx.fill();
+ctx.restore()}
 function drawGroundHint(){const y=H-24;ctx.fillStyle='rgba(255,255,255,.34)';ctx.fillRect(0,y,W,24);ctx.fillStyle='rgba(54,116,151,.55)';ctx.font='600 11px DM Sans, sans-serif';ctx.textAlign='center';ctx.fillText('A tiny hop can take you anywhere',W/2,y+16)}
 function inputDown(which,on){keys[which]=on}
 window.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight',' ','a','d','A','D'].includes(e.key))e.preventDefault();if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')inputDown('left',true);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')inputDown('right',true);if(e.key==='Escape'||e.key.toLowerCase()==='p'){if(state==='playing'||state==='paused')togglePause()}if((e.key==='Enter'||e.key===' ')&&(state==='menu'||state==='over'))newRun()});window.addEventListener('keyup',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')inputDown('left',false);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')inputDown('right',false)});window.addEventListener('blur',()=>{keys.left=keys.right=false;if(state==='playing')togglePause()});
