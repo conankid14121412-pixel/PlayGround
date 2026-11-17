@@ -8,7 +8,7 @@
 'use strict';
 const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d'),game=document.getElementById('game');
 const $=id=>document.getElementById(id),heightEl=$('height'),bestEl=$('best'),starsEl=$('stars'),overlay=$('overlay'),card=$('card'),playBtn=$('playBtn'),pauseBtn=$('pauseBtn'),toast=$('toast');
-let W=0,H=0,dpr=1,last=0,raf=0,state='menu',score=0,starCount=0,best=0,camera=0,player=null,platforms=[],decor=[],keys={left:false,right:false},toastTimer=0;
+let W=0,H=0,dpr=1,last=0,raf=0,state='menu',score=0,starCount=0,best=0,camera=0,player=null,platforms=[],decor=[],keys={left:false,right:false},toastTimer=0,gesture={active:false,startX:0,startY:0};
 try{best=Number(localStorage.getItem('jumpinBest'))||0}catch(e){}
 bestEl.textContent=best+' m';
 function resize(){const r=canvas.getBoundingClientRect();W=r.width;H=r.height;dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);if(state==='menu')draw()}
@@ -53,6 +53,11 @@ ctx.restore()}
 function drawGroundHint(){const y=H-24;ctx.fillStyle='rgba(255,255,255,.34)';ctx.fillRect(0,y,W,24);ctx.fillStyle='rgba(54,116,151,.55)';ctx.font='600 11px DM Sans, sans-serif';ctx.textAlign='center';ctx.fillText('A tiny hop can take you anywhere',W/2,y+16)}
 function inputDown(which,on){keys[which]=on}
 window.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight',' ','a','d','A','D'].includes(e.key))e.preventDefault();if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')inputDown('left',true);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')inputDown('right',true);if(e.key==='Escape'||e.key.toLowerCase()==='p'){if(state==='playing'||state==='paused')togglePause()}if((e.key==='Enter'||e.key===' ')&&(state==='menu'||state==='over'))newRun()});window.addEventListener('keyup',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')inputDown('left',false);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')inputDown('right',false)});window.addEventListener('blur',()=>{keys.left=keys.right=false;if(state==='playing')togglePause()});
+function setGestureDirection(x){if(x<-(W*.12))inputDown('left',true),inputDown('right',false);else if(x>W*.12)inputDown('left',false),inputDown('right',true);else inputDown('left',false),inputDown('right',false)}
+window.addEventListener('pointerdown',e=>{if(e.pointerType==='touch' || e.pointerType==='pen'){gesture.active=true;gesture.startX=e.clientX;gesture.startY=e.clientY;setGestureDirection(0);}}, {passive:true});
+window.addEventListener('pointermove',e=>{if(!gesture.active || !(e.pointerType==='touch'||e.pointerType==='pen'))return;const dx=e.clientX-gesture.startX;setGestureDirection(dx);}, {passive:true});
+window.addEventListener('pointerup',()=>{gesture.active=false;keys.left=false;keys.right=false;}, {passive:true});
+window.addEventListener('pointercancel',()=>{gesture.active=false;keys.left=false;keys.right=false;}, {passive:true});
 for(const [id,dir] of [['leftBtn','left'],['rightBtn','right']]){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);inputDown(dir,true)});for(const ev of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(ev,()=>inputDown(dir,false))}
 playBtn.onclick=newRun;pauseBtn.onclick=togglePause;overlay.addEventListener('click',e=>{if(e.target===overlay&&state==='paused')resume()});resize();draw();
 })();
